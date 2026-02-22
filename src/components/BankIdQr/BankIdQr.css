@@ -1,0 +1,58 @@
+.bankid-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.bankid-qr__code {
+  border: var(--border-thick);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
+  background: white;
+  line-height: 0;
+}
+
+.bankid-qr__code canvas {
+  width: 200px !important;
+  height: 200px !important;
+}
+
+.bankid-qr__or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+
+.bankid-qr__or::before,
+.bankid-qr__or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-muted);
+}
+
+.bankid-qr__instructions {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.bankid-qr__instructions ol {
+  text-align: left;
+  padding-left: var(--space-5);
+  margin-top: var(--space-2);
+}
+
+.bankid-qr__instructions li {
+  margin-bottom: var(--space-1);
+}
+
+.bankid-qr__same-device {
+  width: 100%;
+}

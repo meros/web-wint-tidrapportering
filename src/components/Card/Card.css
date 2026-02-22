@@ -1,0 +1,26 @@
+.card {
+  background: var(--color-surface);
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-4);
+}
+
+.card--flat {
+  box-shadow: none;
+}
+
+.card--accent {
+  border-left: 4px solid var(--color-primary);
+}
+
+.card-header {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+
+.card-body {
+  font-size: var(--text-base);
+}

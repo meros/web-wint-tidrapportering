@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background: warm cream rounded square with thick border -->
+  <rect x="16" y="16" width="480" height="480" rx="64" ry="64"
+        fill="#FFF4E0" stroke="#1A1A2E" stroke-width="24"/>
+
+  <!-- Neobrutalism shadow offset -->
+  <rect x="28" y="28" width="480" height="480" rx="64" ry="64"
+        fill="#1A1A2E" opacity="0.12"/>
+  <rect x="16" y="16" width="480" height="480" rx="64" ry="64"
+        fill="#FFF4E0" stroke="#1A1A2E" stroke-width="24"/>
+
+  <!-- Clock face: white circle with thick border -->
+  <circle cx="256" cy="240" r="150" fill="#FFFFFF" stroke="#1A1A2E" stroke-width="18"/>
+
+  <!-- Clock hour markers (12, 3, 6, 9) -->
+  <line x1="256" y1="108" x2="256" y2="130" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round"/>
+  <line x1="388" y1="240" x2="366" y2="240" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round"/>
+  <line x1="256" y1="372" x2="256" y2="350" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round"/>
+  <line x1="124" y1="240" x2="146" y2="240" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Hour hand: pointing to ~2 o'clock (hot pink) -->
+  <line x1="256" y1="240" x2="320" y2="160" stroke="#FF3366" stroke-width="16" stroke-linecap="round"/>
+
+  <!-- Minute hand: pointing to ~12 (dark navy) -->
+  <line x1="256" y1="240" x2="256" y2="130" stroke="#1A1A2E" stroke-width="10" stroke-linecap="round"/>
+
+  <!-- Center dot -->
+  <circle cx="256" cy="240" r="14" fill="#FF3366" stroke="#1A1A2E" stroke-width="6"/>
+
+  <!-- Bottom: stylized "grid" bars representing timesheet rows -->
+  <rect x="100" y="420" width="90" height="16" rx="4" fill="#FF3366" stroke="#1A1A2E" stroke-width="4"/>
+  <rect x="210" y="420" width="90" height="16" rx="4" fill="#88D317" stroke="#1A1A2E" stroke-width="4"/>
+  <rect x="320" y="420" width="90" height="16" rx="4" fill="#FFD700" stroke="#1A1A2E" stroke-width="4"/>
+
+  <rect x="100" y="450" width="140" height="16" rx="4" fill="#7B68EE" stroke="#1A1A2E" stroke-width="4"/>
+  <rect x="260" y="450" width="150" height="16" rx="4" fill="#FF3366" stroke="#1A1A2E" stroke-width="4"/>
+</svg>

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+storybook-static/
+.direnv/
+result
+*.log
+.DS_Store
+tsconfig.tsbuildinfo
+swagger.json

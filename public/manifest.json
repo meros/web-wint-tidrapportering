@@ -1,0 +1,16 @@
+{
+  "name": "Tidrapporting",
+  "short_name": "Tidrapporting",
+  "description": "Tidrapporting för Wint.se",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF4E0",
+  "theme_color": "#FF3366",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

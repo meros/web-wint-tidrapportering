@@ -1,0 +1,136 @@
+.hour-cell {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hour-cell__input {
+  width: 56px;
+  height: 44px;
+  padding: var(--space-1);
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+}
+
+.hour-cell__input:focus {
+  outline: none;
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-primary);
+  transform: translate(-1px, -1px);
+}
+
+.hour-cell__input--dirty {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, white);
+}
+
+.hour-cell__input--locked {
+  background: color-mix(in srgb, var(--color-muted) 15%, white);
+  color: var(--color-muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.hour-cell__input--today {
+  border-color: var(--color-primary);
+  border-width: 2.5px;
+}
+
+.hour-cell__input--weekend {
+  background: color-mix(in srgb, var(--color-bg) 60%, white);
+}
+
+/* ── Corner triangle: indicates cell has a comment ── */
+.hour-cell--has-comment::before {
+  content: '';
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 12px 12px 0;
+  border-color: transparent var(--color-tertiary) transparent transparent;
+  border-radius: 0 calc(var(--radius) - 1px) 0 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Corner click target: hover-revealed on desktop ── */
+.hour-cell__corner-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+/* Always visible when cell has a comment */
+.hour-cell--has-comment .hour-cell__corner-btn {
+  opacity: 1;
+}
+
+/* Show on hover for all cells (desktop) */
+.hour-cell:hover .hour-cell__corner-btn {
+  opacity: 1;
+}
+
+/* Show a "+" icon on hover when no comment exists */
+.hour-cell:not(.hour-cell--has-comment):hover .hour-cell__corner-btn::after {
+  content: '+';
+  position: absolute;
+  top: 1px;
+  right: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  line-height: 1;
+}
+
+.hour-cell:not(.hour-cell--has-comment):hover .hour-cell__corner-btn:hover::after {
+  color: var(--color-tertiary);
+}
+
+/* ── Compact mode (mobile) ── */
+.hour-cell--compact .hour-cell__input {
+  width: 100%;
+  height: 38px;
+  font-size: var(--text-sm);
+  box-shadow: none;
+  border-width: 1.5px;
+}
+
+.hour-cell--compact .hour-cell__input:focus {
+  box-shadow: var(--shadow-sm);
+}
+
+.hour-cell--compact.hour-cell--has-comment::before {
+  border-width: 0 10px 10px 0;
+  top: 0;
+  right: 0;
+}
+
+/* Remove spinner arrows on mobile */
+.hour-cell--compact .hour-cell__input::-webkit-inner-spin-button,
+.hour-cell--compact .hour-cell__input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.hour-cell--compact .hour-cell__input[type='number'] {
+  -moz-appearance: textfield;
+}

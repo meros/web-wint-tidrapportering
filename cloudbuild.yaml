@@ -1,0 +1,55 @@
+steps:
+  # Step 1: Build with Nix — produces a Docker image tarball
+  - name: 'nixos/nix:latest'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
+        echo "filter-syscalls = false" >> /etc/nix/nix.conf
+        nix build .#container --no-link --print-out-paths > /tmp/result-path
+        $(cat /tmp/result-path) > /workspace/image.tar
+
+  # Step 2: Load, tag, and push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker load < /workspace/image.tar
+        docker tag wint-time:latest \
+          ${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:${SHORT_SHA}
+        docker tag wint-time:latest \
+          ${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:latest
+        docker push ${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:${SHORT_SHA}
+        docker push ${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:latest
+
+  # Step 3: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'wint-time'
+      - '--image'
+      - '${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:${SHORT_SHA}'
+      - '--region'
+      - '${_AR_LOCATION}'
+      - '--platform'
+      - 'managed'
+      - '--port'
+      - '8080'
+      - '--allow-unauthenticated'
+
+images:
+  - '${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:${SHORT_SHA}'
+  - '${_AR_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPOSITORY}/wint-time:latest'
+
+substitutions:
+  _AR_LOCATION: europe-north1
+  _AR_REPOSITORY: wint-time
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+
+timeout: 1800s

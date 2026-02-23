@@ -60,6 +60,9 @@ async function proxyApi(req, res) {
     for (const [key, value] of upstream.headers.entries()) {
       // Replace upstream CORS headers with our own permissive ones
       if (key.startsWith('access-control-')) continue;
+      // fetch() auto-decompresses, so drop encoding/length headers to avoid
+      // the browser trying to decompress already-decompressed data
+      if (key === 'content-encoding' || key === 'content-length' || key === 'transfer-encoding') continue;
       resHeaders[key] = value;
     }
 

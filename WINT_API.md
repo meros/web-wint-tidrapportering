@@ -885,6 +885,110 @@ Project summaries for a date range.
 
 Returns bare boolean: `true`
 
+### PUT /api/TimeReport/Status
+
+Lock or unlock a week's time report. **Not in swagger** — discovered via HAR capture.
+
+**Request:**
+```json
+{
+  "employeeId": 10001,
+  "startDate": "2026-02-16T00:00:00",
+  "endDate": "2026-02-22T00:00:00",
+  "status": 1
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `employeeId` | int | Employee ID |
+| `startDate` | string | Monday of the week (ISO datetime) |
+| `endDate` | string | Sunday of the week (ISO datetime) |
+| `status` | int | `0` = Open/Unlocked, `1` = Submitted/Locked |
+
+**Response** (200): Empty body.
+
+> **Verified from HAR.** Uses camelCase request body (unlike most PascalCase GET responses).
+> Date range covers a full ISO week (Monday to Sunday).
+
+### GET /api/TimeReport/Filter
+
+Fetch time report data for an employee over a date range. Returns projects, weeks, and daily entries with comments.
+
+**Query params:**
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `employeeId` | int | Employee ID |
+| `startDate` | string | Start date (ISO datetime) |
+| `endDate` | string | End date (ISO datetime) |
+
+**Response** (200):
+```json
+{
+  "EmployeeId": 10001,
+  "EmployeeName": "Anna Andersson",
+  "Projects": [
+    {
+      "Id": "uuid",
+      "Name": "Nordic Tech — normala timmar",
+      "IsInternal": false,
+      "Categories": [{"Id": 12542, "Name": "Normaltid", "IsDefault": true}]
+    }
+  ],
+  "Weeks": [
+    {
+      "WeekStart": "2026-02-16T00:00:00",
+      "WeekEnd": "2026-02-22T00:00:00",
+      "WeekNumber": 8,
+      "TotalHours": 40.0,
+      "ExpectedWorkHours": 40.0,
+      "ExpectedCompHours": -40.0,
+      "WeekSegments": [{"WeekSegmentStatus": 0, "WeekSegmentStart": "...", "WeekSegmentEnd": "..."}],
+      "TimeReports": [
+        {
+          "TimeLogDate": "2026-02-16T00:00:00",
+          "WeekDayName": 1,
+          "WeekNumber": 8,
+          "IsWorkDay": true,
+          "TotalHours": 8.0,
+          "IsLocked": false,
+          "TimeReduction": 0,
+          "TimeReportStatus": 0,
+          "ProjectTimes": [
+            {
+              "ProjectId": "uuid",
+              "ProjectName": "Nordic Tech — normala timmar",
+              "Hours": 8.0,
+              "IsInternal": false,
+              "IsLocked": false,
+              "CategoryTimes": [
+                {
+                  "CategoryId": 12542,
+                  "CategoryName": "Normaltid",
+                  "Hours": 8.0,
+                  "IsLocked": false,
+                  "ExternalComment": null,
+                  "InternalComment": null
+                }
+              ]
+            }
+          ],
+          "Deviations": []
+        }
+      ]
+    }
+  ]
+}
+```
+
+### POST /api/TimeReport/MergeTimeReport
+
+Save time entries for a week. Uses **camelCase** payload (not PascalCase).
+
+**Request:** Full week payload with employee, projects, and daily entries. See `src/api/timereport.ts:buildMergePayload()` for the exact structure.
+
+**Response** (200): Empty body.
+
 ### GET /api/TimeReport/Report
 
 Detailed hierarchical time report. **NOT** paginated (returns raw array).

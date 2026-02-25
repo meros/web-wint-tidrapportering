@@ -72,44 +72,9 @@ TimeReport/Filter → parseFilterResponse() → ProjectWeekData[]
 - `POST /api/BankIdAuth/start` → `GET /api/BankIdAuth/jwt/{id}` — BankID auth flow
 - `GET /api/Company` → `POST /api/Company/Selected` — Company selection
 
-### Testing Strategy
-- **Unit tests** (Vitest): Component rendering, user interactions, utility functions
-- **API mocking** (MSW): Full mock API in `src/test/mocks/handlers.ts`
-- **Storybook stories**: Visual development and manual testing of all states
-
-### Key Files for Understanding the Codebase
-1. `src/hooks/useTimeReport.ts` — Main business logic (data fetching, parsing, saving, locking)
-2. `src/api/client.ts` — How API calls are made (auth headers, proxy)
-3. `src/components/WeekGrid/WeekGrid.tsx` — Main UI composition
+### Key Files
+1. `src/hooks/useTimeReport.ts` — Main business logic
+2. `src/api/client.ts` — API calls (auth headers, proxy)
+3. `src/components/WeekGrid/WeekGrid.tsx` — Main UI
 4. `src/App.tsx` — App shell, keyboard shortcuts, URL state
 5. `src/test/mocks/handlers.ts` — All mock API responses
-6. `WINT_API.md` — Complete API documentation
-
-### Deployment
-```bash
-# Development
-pnpm dev              # Vite dev server (port 5173, API proxy → api.wint.se)
-
-# Production
-pnpm build && pnpm start   # Build + start proxy server (default port 3000)
-PORT=8080 pnpm start        # Custom port
-
-# Docker
-docker build -t wint . && docker run -p 3000:3000 wint
-```
-
-## Contributing
-
-### Adding a New Component
-1. Create folder: `src/components/MyComponent/`
-2. Create files: `MyComponent.tsx`, `MyComponent.css`, `MyComponent.stories.tsx`, `MyComponent.test.tsx`
-3. Follow existing patterns (CSS class naming: `.my-component`, `.my-component--variant`)
-4. Export from the .tsx file (named export, no default)
-5. Use CSS custom properties from `tokens.css` for colors, spacing, shadows
-6. Test with `pnpm test` and verify in Storybook with `pnpm storybook`
-
-### Adding API Endpoints
-1. Add types and function in the appropriate `src/api/*.ts` file
-2. Add MSW handler in `src/test/mocks/handlers.ts`
-3. Wire into hooks as needed
-4. Document in `WINT_API.md` if it's a newly discovered endpoint

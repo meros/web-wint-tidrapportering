@@ -76,5 +76,5 @@ export function startAnimatedQr(
 export function buildAutoStartUrl(autoStartToken: string): string {
   // Universal link works on both iOS and Android (recommended by BankID)
   // redirect=null tells BankID not to redirect after auth (browser polls instead)
-  return `https://app.bankid.com/?autostarttoken=[${autoStartToken}]&redirect=null`;
+  return `https://app.bankid.com/?autostarttoken=${autoStartToken}&redirect=null`;
 }

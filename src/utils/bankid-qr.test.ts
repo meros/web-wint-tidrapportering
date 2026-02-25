@@ -41,14 +41,10 @@ describe('computeQrData', () => {
 });
 
 describe('buildAutoStartUrl', () => {
-  it('wraps token in square brackets', () => {
+  it('includes autostarttoken param with token value', () => {
     const url = buildAutoStartUrl('abc-123');
-    expect(url).toContain('[abc-123]');
-  });
-
-  it('includes autostarttoken param', () => {
-    const url = buildAutoStartUrl('abc-123');
-    expect(url).toContain('autostarttoken=[abc-123]');
+    expect(url).toContain('autostarttoken=abc-123');
+    expect(url).not.toContain('[abc-123]');
   });
 
   it('includes redirect=null', () => {

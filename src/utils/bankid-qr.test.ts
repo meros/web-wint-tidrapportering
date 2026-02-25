@@ -55,4 +55,9 @@ describe('buildAutoStartUrl', () => {
     const url = buildAutoStartUrl('abc-123');
     expect(url).toContain('redirect=null');
   });
+
+  it('uses universal link base URL', () => {
+    const url = buildAutoStartUrl('abc-123');
+    expect(url.startsWith('https://app.bankid.com/')).toBe(true);
+  });
 });

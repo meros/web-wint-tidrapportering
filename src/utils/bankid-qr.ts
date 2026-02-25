@@ -74,10 +74,7 @@ export function startAnimatedQr(
 
 /** Build BankID autostart URL (for opening BankID on the same device) */
 export function buildAutoStartUrl(autoStartToken: string): string {
-  // Use universal link for iOS, bankid:// for others
-  const isIos = /iPhone|iPad|iPod/.test(navigator.userAgent);
-  const base = isIos
-    ? 'https://app.bankid.com/'
-    : 'bankid:///';
-  return `${base}?autostarttoken=[${autoStartToken}]&redirect=null`;
+  // Universal link works on both iOS and Android (recommended by BankID)
+  // redirect=null tells BankID not to redirect after auth (browser polls instead)
+  return `https://app.bankid.com/?autostarttoken=[${autoStartToken}]&redirect=null`;
 }

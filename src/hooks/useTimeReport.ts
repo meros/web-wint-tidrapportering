@@ -240,20 +240,24 @@ export function useTimeReport(
       for (const project of projects) {
         for (let di = 0; di < 7; di++) {
           const day = project.days[di];
-          if (!day || !day.dirty) continue;
+          if (!day) continue;
           const date = weekDays[di];
           if (!date) continue;
 
-          entries.push({
-            date,
-            projectId: project.projectId,
-            projectName: project.projectName,
-            categoryId: project.categoryId,
-            categoryName: project.categoryName,
-            hours: day.hours ?? 0,
-            internalComment: day.internalNote || '',
-            externalComment: day.externalNote || '',
-          });
+          // Send ALL entries, not just dirty ones — the MergeTimeReport API
+          // replaces the entire week, so omitted entries would be cleared to 0.
+          if (day.hours || day.internalNote || day.externalNote) {
+            entries.push({
+              date,
+              projectId: project.projectId,
+              projectName: project.projectName,
+              categoryId: project.categoryId,
+              categoryName: project.categoryName,
+              hours: day.hours ?? 0,
+              internalComment: day.internalNote || '',
+              externalComment: day.externalNote || '',
+            });
+          }
         }
       }
 

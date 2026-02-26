@@ -61,6 +61,7 @@ export interface PollPendingResponse {
 export interface PollCompleteResponse {
   status: 'complete';
   jwt: string;
+  refreshToken: string;
   employeeId?: number;
   name?: string;
 }
@@ -87,6 +88,7 @@ export async function pollJwt(signId: string): Promise<PollResponse> {
     return {
       status: 'complete',
       jwt: raw.LoginInfo.AuthTokens.AccessToken,
+      refreshToken: raw.LoginInfo.AuthTokens.RefreshToken,
       employeeId: raw.LoginInfo.PersonId,
       name: raw.LoginInfo.Name,
     };

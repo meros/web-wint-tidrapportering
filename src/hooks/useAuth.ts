@@ -2,10 +2,11 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { startBankId, pollJwt } from '../api/auth';
 import { listCompanies, selectCompany } from '../api/company';
 import type { Company } from '../api/company';
-import { setAuthToken, setCompanyId } from '../api/client';
+import { setAuthToken, setRefreshToken, setCompanyId, setOnAuthFailure } from '../api/client';
 import type { BankIdQrData } from '../components/Login/Login';
 
 const STORAGE_KEY_JWT = 'wint-jwt';
+const STORAGE_KEY_REFRESH = 'wint-refresh-token';
 const STORAGE_KEY_EMPLOYEE = 'wint-employee';
 const STORAGE_KEY_COMPANY = 'wint-company';
 const STORAGE_KEY_COMPANIES = 'wint-companies';
@@ -55,11 +56,16 @@ export function useAuth(): AuthState {
 
   const companyName = companies.find((c) => String(c.Id) === companyId)?.Name ?? null;
 
-  // Restore auth headers on mount
+  // Restore auth headers on mount and register auth failure handler
   useEffect(() => {
     if (jwt) setAuthToken(jwt);
     if (companyId) setCompanyId(companyId);
+    const storedRefresh = localStorage.getItem(STORAGE_KEY_REFRESH);
+    if (storedRefresh) setRefreshToken(storedRefresh);
   }, [jwt, companyId]);
+
+  // Use a ref so the auth failure callback always calls the latest logout
+  const logoutRef = useRef<() => void>(() => {});
 
   const cancelLogin = useCallback(() => {
     cancelledRef.current = true;
@@ -85,7 +91,7 @@ export function useAuth(): AuthState {
       });
 
       // Poll for JWT — each poll returns updated QR data
-      const result = await new Promise<{ jwt: string; employeeId?: number; name?: string }>((resolve, reject) => {
+      const result = await new Promise<{ jwt: string; refreshToken: string; employeeId?: number; name?: string }>((resolve, reject) => {
         let attempts = 0;
         const maxAttempts = 200; // ~60 seconds at 300ms intervals
 
@@ -102,7 +108,7 @@ export function useAuth(): AuthState {
             }
 
             if (resp.status === 'complete') {
-              resolve({ jwt: resp.jwt, employeeId: resp.employeeId, name: resp.name });
+              resolve({ jwt: resp.jwt, refreshToken: resp.refreshToken, employeeId: resp.employeeId, name: resp.name });
               return;
             }
 
@@ -127,9 +133,11 @@ export function useAuth(): AuthState {
 
       if (cancelledRef.current) return;
 
-      // Store JWT and set up client
+      // Store JWT + refresh token and set up client
       setAuthToken(result.jwt);
+      setRefreshToken(result.refreshToken);
       localStorage.setItem(STORAGE_KEY_JWT, result.jwt);
+      localStorage.setItem(STORAGE_KEY_REFRESH, result.refreshToken);
       setJwt(result.jwt);
       setBankIdQr(null);
 
@@ -189,6 +197,7 @@ export function useAuth(): AuthState {
 
   const logout = useCallback(() => {
     setAuthToken(null);
+    setRefreshToken(null);
     setCompanyId(null);
     setJwt(null);
     setEmployee(null);
@@ -196,9 +205,17 @@ export function useAuth(): AuthState {
     setCompanies([]);
     setBankIdQr(null);
     localStorage.removeItem(STORAGE_KEY_JWT);
+    localStorage.removeItem(STORAGE_KEY_REFRESH);
     localStorage.removeItem(STORAGE_KEY_EMPLOYEE);
     localStorage.removeItem(STORAGE_KEY_COMPANY);
     localStorage.removeItem(STORAGE_KEY_COMPANIES);
+  }, []);
+
+  // Wire up auto-logout on unrecoverable auth failure (401 + refresh failed)
+  logoutRef.current = logout;
+  useEffect(() => {
+    setOnAuthFailure(() => logoutRef.current());
+    return () => setOnAuthFailure(null);
   }, []);
 
   return {
